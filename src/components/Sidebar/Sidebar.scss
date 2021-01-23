@@ -1,0 +1,110 @@
+.Sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 40px;
+  display: block;
+  background: $background;
+  overflow: hidden;
+  z-index: $z-index-sidebar;
+  padding-top: $header;
+  user-select: none;
+  @include sidebar;
+
+  .has-tab & {
+    width: 200px;
+  }
+
+  &__nav {
+    width: 40px;
+    height: 100%;
+    user-select: none;
+    border-top: 1px solid $black;
+    border-right: 1px solid $black;
+
+    svg {
+      fill: $white;
+      width: 14px;
+      height: 14px;
+
+      display: block;
+    }
+
+    li {
+      display: block;
+      opacity: 0.4;
+      border-bottom: 1px solid $black;
+
+      &.is-active {
+        opacity: 1;
+      }
+    }
+    .click {
+      display: block;
+      text-align: center;
+      width: 40px;
+      font-size: 0px;
+      padding: 14px;
+    }
+  }
+  &__tab {
+    top: $header;
+    bottom: 0;
+    left: 40px;
+    right: 0;
+    position: absolute;
+    overflow-x: hidden;
+    overflow-y: auto;
+    ul {
+      display: block;
+      li {
+        width: 100%;
+        display: block;
+        &.is-active {
+          background: rgba($white, 0.1);
+        }
+        & > * {
+          display: block;
+          padding: $marginSidebar;
+        }
+      }
+    }
+  }
+  &__newFile {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+
+    form {
+      display: block;
+      input {
+        display: block;
+        @include sidebar;
+        padding: $marginSidebar;
+        background: $darkerBlack;
+        color: $white;
+      }
+    }
+    .click {
+      display: block;
+      padding: $marginSidebar;
+      opacity: 0.4;
+      @include hover {
+        opacity: 1;
+      }
+    }
+  }
+  &__rhymes {
+    display: block;
+    input {
+      display: block;
+      @include sidebar;
+      padding: $marginSidebar;
+      background: $darkerBlack;
+      color: $white;
+    }
+  }
+}

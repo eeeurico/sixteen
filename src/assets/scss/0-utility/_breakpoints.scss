@@ -1,0 +1,65 @@
+$breakpoints: (
+    'width-xsmall'  : 320px,
+    'width-small'   : 992px,
+    'width-medium'  : 1024px,
+    'width-large'   : 1200px,
+    'width-xlarge'  : 1400px,
+    'width-xxlarge' : 1500px,
+    'width-huge'    : 1600px,
+
+    'height-small'  : 600px,
+    'height-medium' : 770px,
+    'height-high'   : 900px
+);
+
+$small:992px;
+$medium: 1024px;
+$large: 1200px;
+$xlarge: 1400px;
+$xxlarge: 1600px;
+
+$header-expanded: map-get($breakpoints, "width-large");
+
+@mixin breakpoint($width: '', $height: '') {
+    @if map-has-key($breakpoints, 'width-#{$width}') {
+        @if map-has-key($breakpoints, 'height-#{$height}') {
+            @media only screen and (min-width: map-get($breakpoints, 'width-#{$width}')) and (min-height: map-get($breakpoints, 'height-#{$height}')) { @content; }
+        }
+        @else {
+            @media only screen and (min-width: map-get($breakpoints, 'width-#{$width}')) { @content; }
+        }
+    }
+    @else {
+        @if map-has-key($breakpoints, 'height-#{$height}') {
+            @media only screen and (min-height: map-get($breakpoints, 'height-#{$height}')) { @content; }
+        }
+        @else {
+            @warn 'Breakpoint: width and height not found.';
+        }
+    }
+}
+
+@mixin breakpoint-max($width: '', $height: '') {
+    @if map-has-key($breakpoints, 'width-#{$width}') {
+        @if map-has-key($breakpoints, 'height-#{$height}') {
+            @media only screen and (max-width: map-get($breakpoints, 'width-#{$width}')-1) and (max-height: map-get($breakpoints, 'height-#{$height}')) { @content; }
+        }
+        @else {
+            @media only screen and (max-width: map-get($breakpoints, 'width-#{$width}')-1) { @content; }
+        }
+    }
+    @else {
+        @if map-has-key($breakpoints, 'height-#{$height}') {
+            @media only screen and (max-height: map-get($breakpoints, 'height-#{$height}')) { @content; }
+        }
+        @else {
+            @warn 'Breakpoint: width and height not found.';
+        }
+    }
+}
+
+@mixin breakpoint-state($name) {
+    @if($name == 'vertical') { // less than 700px
+        @media only screen and (max-width: map-get($breakpoints, 'width-small')) { @content; }
+    }
+}

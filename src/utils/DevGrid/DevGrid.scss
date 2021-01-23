@@ -1,0 +1,24 @@
+.DevGrid {
+  background: url("text.png") no-repeat center top;
+  // background-size: cover;
+  background-size: 100% auto;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.2;
+
+  z-index: 9999;
+  display: flex;
+  pointer-events: none;
+
+  & > div {
+    background: transparent;
+    opacity: 1;
+    margin: 0;
+    width: 100%;
+    border-left: 1px solid red;
+  }
+}

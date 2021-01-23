@@ -1,0 +1,42 @@
+$weights: (
+  "light": 300,
+  "book": 400,
+  "regular": 400,
+  "medium": 500,
+  "semibold": 600,
+  "bold": 700,
+);
+
+/* -----
+Responsive Font
+----- */
+@mixin font(
+  $family: false,
+  $weight: false,
+  $size: false,
+  $line: false,
+  $spacing: false
+) {
+  @if $family {
+    font-family: $family;
+  }
+  @if $weight {
+    @if type-of($weight) ==number {
+      font-weight: $weight;
+    } @else {
+      font-weight: map-get($weights, $weight);
+    }
+  }
+  @if $size {
+    font-size: $size * 1px;
+
+    @if $line {
+      line-height: ($line * 1px);
+    }
+  }
+  @if $spacing and $size {
+    letter-spacing: $spacing * 0.01em;
+  } @else if $spacing and not $size {
+    @error 'Letter spacing requires $size to be set';
+  }
+}

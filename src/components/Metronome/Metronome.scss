@@ -1,0 +1,75 @@
+.Metronome {
+  position: fixed;
+  bottom: 0;
+  left: 0px;
+  z-index: $z-index-metronome;
+
+  &__btn {
+    display: block;
+    text-align: center;
+    width: 40px;
+    font-size: 0px;
+    padding: 14px;
+    cursor: pointer;
+    opacity: 0.4;
+
+    svg {
+      fill: $white;
+      width: 14px;
+      height: 14px;
+
+      display: block;
+    }
+  }
+
+  &__bpm {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+    opacity: 0.4;
+    border: 1px solid $white;
+    border-radius: 3px;
+    font-size: 12px;
+    line-height: 20px;
+    display: flex;
+
+    &.--error {
+      input {
+        color: red;
+      }
+    }
+    @include hover {
+      opacity: 1;
+    }
+    input {
+      /* Chrome, Safari, Edge, Opera */
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        margin: 0;
+      }
+
+      /* Firefox */
+      &[type="number"] {
+        -moz-appearance: textfield;
+      }
+      text-align: center;
+      border: 0;
+      outline: none;
+      font-size: 12px;
+      line-height: 20px;
+      color: $white;
+      padding: 0 5px;
+    }
+  }
+  span {
+    background: $white;
+    font-size: 12px;
+    line-height: 20px;
+    color: $darkerBlack;
+    padding: 0 5px;
+  }
+}

@@ -1,0 +1,29 @@
+/*
+    Main style file
+*/
+/*
+    Utils style file
+*/
+
+// Utility: functions
+@import "0-utility/utils";
+@import "0-utility/breakpoints";
+@import "0-utility/easings";
+@import "0-utility/typography";
+
+// Init
+@import "1-init/vars";
+@import "1-init/typography";
+@import "1-init/zIndex";
+
+// Vendor: plugins
+@import "2-vendor/normalize";
+
+// Base global styles
+// @import "3-base/font-face";
+@import "3-base/typography";
+@import "3-base/base";
+
+// MAIN STYLES app, views and components
+@import "../../components/components.scss";
+@import "../../views/views.scss";

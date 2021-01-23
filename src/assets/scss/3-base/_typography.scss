@@ -1,0 +1,34 @@
+// @include font(font-family, font-weight, font-size, line-height, letter-spacing)
+// all values according to 1500px photoshop file.
+// returns viewport font-sizes and em line-height.
+
+body {
+  @include text;
+}
+input,
+label,
+textarea {
+  @include text;
+}
+
+p {
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  @include title;
+
+  b,
+  strong {
+    font-weight: 400;
+  }
+}
+a {
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
