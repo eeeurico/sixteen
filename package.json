@@ -1,8 +1,9 @@
 {
   "name": "Sixteen",
   "author": "Eurico Sá Fernandes",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "repository": "oortnetwork/sixteen",
+  "license": "MIT",
   "build": {
     "appId": "com.oort.sixteen",
     "files": [

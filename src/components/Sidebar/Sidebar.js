@@ -14,7 +14,6 @@ const Sidebar = ({
   const inputRhymes = useRef(null);
   //
   const [newEntry, setNewEntry] = useState(false);
-  const [rhymeWord, setRhymeWord] = useState("");
   const [rhymesArray, setRhymesArray] = useState([]);
 
   //
@@ -28,7 +27,6 @@ const Sidebar = ({
 
   const newRhyme = () => {
     const newRhymeValue = inputRhymes.current.value;
-    setRhymeWord();
     setRhymesArray(newRhymeValue ? rhymes(newRhymeValue) : []);
   };
 

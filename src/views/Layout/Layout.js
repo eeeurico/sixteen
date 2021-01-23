@@ -6,7 +6,6 @@ const { ipcRenderer } = window.require("electron");
 const fs = window.require("fs");
 
 const Layout = () => {
-  const [ignore, setIgnore] = useState(false);
   const [loadedFile, setLoadedFile] = useState(null);
   const [filesData, setFilesData] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -24,12 +23,6 @@ const Layout = () => {
       loadFile(0);
     }
 
-    // if (!ignore) {
-    // ipcRenderer.on("new-file", (event, fileContent) => {
-    //   console.log(fileContent);
-    //   setLoadedFile(fileContent);
-    // });
-
     ipcRenderer.on("new-dir", (event, directory) => {
       setDirectory(directory);
       settings.set("directory", directory);
@@ -39,10 +32,7 @@ const Layout = () => {
     ipcRenderer.on("save-file", () => {
       saveFile();
     });
-
-    // setIgnore(true);
-    // }
-  }, [filesData.length, directory, loadedFile, ignore]);
+  });
 
   const loadAndReadFiles = (directory) => {
     fs.readdir(directory, (err, files) => {
