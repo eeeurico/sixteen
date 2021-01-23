@@ -52,6 +52,8 @@ const Layout = () => {
         title: file,
       }));
 
+      console.log(filesDataMain);
+
       setFilesData(filesDataMain);
       // loadFile(0);
       // setFilesData;
@@ -72,6 +74,8 @@ const Layout = () => {
   };
 
   const saveFile = () => {
+    // console.log(filesData, activeIndex);
+    if (!filesData.length) return;
     fs.writeFile(filesData[activeIndex].path, loadedFile, (err) => {
       if (err) return console.log(err);
       console.log("saved");
