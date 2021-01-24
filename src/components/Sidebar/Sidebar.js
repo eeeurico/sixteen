@@ -57,58 +57,56 @@ const Sidebar = ({
           </li>
         ))}
       </ul>
-      {tab === "files" && (
-        <div className="Sidebar__tab">
-          <ul>
-            {filesData.map((file, i) => (
-              <li
-                className={activeIndex === i ? "is-active" : ""}
-                key={"files--" + i}
-              >
-                <div className="click" onClick={(e) => changeFile(i)}>
-                  {file.title}
-                </div>
-              </li>
-            ))}
-          </ul>
-          <div className="Sidebar__newFile">
-            {newEntry && (
-              <form onSubmit={(e) => clickNewEntry(e)}>
-                <input
-                  ref={inputNewEntry}
-                  autoFocus
-                  type="text"
-                  placeholder="File name"
-                />
-              </form>
-            )}
-            <div className="click" onClick={(e) => setNewEntry(!newEntry)}>
-              {newEntry ? "Close" : "New file"}
-            </div>
-          </div>
-        </div>
-      )}
-      {tab === "rhymes" && (
-        <div className="Sidebar__tab">
-          <div className="Sidebar__rhymes">
-            <input
-              ref={inputRhymes}
-              autoFocus
-              type="text"
-              placeholder="Word"
-              onChange={(e) => newRhyme()}
-            />
-          </div>
 
-          <ul>
-            {rhymesArray.map(({ word = "" }, i) => (
-              <li key={"rhymeArray--" + i}>
-                <div>{word}</div>
-              </li>
-            ))}
-          </ul>
+      <div className={`Sidebar__tab ${tab === "files" ? "is-active" : ""}`}>
+        <ul>
+          {filesData.map((file, i) => (
+            <li
+              className={activeIndex === i ? "is-active" : ""}
+              key={"files--" + i}
+            >
+              <div className="click" onClick={(e) => changeFile(i)}>
+                {file.title}
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div className="Sidebar__newFile">
+          {newEntry && (
+            <form onSubmit={(e) => clickNewEntry(e)}>
+              <input
+                ref={inputNewEntry}
+                autoFocus
+                type="text"
+                placeholder="File name"
+              />
+            </form>
+          )}
+          <div className="click" onClick={(e) => setNewEntry(!newEntry)}>
+            {newEntry ? "Close" : "New file"}
+          </div>
         </div>
-      )}
+      </div>
+
+      <div className={`Sidebar__tab ${tab === "rhymes" ? "is-active" : ""}`}>
+        <div className="Sidebar__rhymes">
+          <input
+            ref={inputRhymes}
+            autoFocus
+            type="text"
+            placeholder="Word"
+            onChange={(e) => newRhyme()}
+          />
+        </div>
+
+        <ul>
+          {rhymesArray.map(({ word = "" }, i) => (
+            <li key={"rhymeArray--" + i}>
+              <div>{word}</div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

@@ -19,7 +19,7 @@ const Layout = () => {
     if (!filesData.length && directory) {
       loadAndReadFiles(directory);
     }
-    if (directory && filesData.length && !loadedFile) {
+    if (directory && filesData.length && loadedFile === null) {
       loadFile(0);
     }
 
