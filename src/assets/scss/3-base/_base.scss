@@ -52,6 +52,7 @@ body {
   color: $text;
   overflow-x: hidden;
   overflow-y: auto;
+  @include hide-scrollbar;
 }
 
 .button-reset {

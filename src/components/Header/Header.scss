@@ -92,6 +92,7 @@
     }
   }
   &__tab {
+    @include hide-scrollbar;
     right: 10px;
     top: $header;
 

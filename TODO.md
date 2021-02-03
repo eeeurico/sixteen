@@ -1,1 +1,2 @@
 - set mode, change globally on update
+- make to all linux and windows
