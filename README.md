@@ -11,4 +11,4 @@ Sixteen is built with React and Electron.
 
 ## How to use
 
-Sixteen works off simple txt files. To use create a folder in your computer and open it in the app.
+Sixteen works off simple txt files. To use create open or create a txt file.

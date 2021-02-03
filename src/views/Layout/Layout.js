@@ -15,7 +15,7 @@ const Layout = ({ currentFile = false }) => {
   const filesData = [
     {
       path: new URL(`file://${currentFile}`),
-      title: currentFileSplit[currentFileSplit.length - 1],
+      title: currentFileSplit[currentFileSplit.length - 1].replace("%20", " "),
     },
   ];
   const [loadedFile, setLoadedFile] = useState(null);

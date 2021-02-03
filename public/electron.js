@@ -1,10 +1,13 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, Menu, dialog } = require("electron");
 const settings = require("electron-settings");
+const contextMenu = require("electron-context-menu");
 
 const path = require("path");
 // const fs = require("fs");
 const isDev = require("electron-is-dev");
+
+contextMenu();
 
 var currentWindows = new Map();
 let currentFiles = [];
@@ -198,6 +201,7 @@ function createNewWindow(file) {
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
+      spellcheck: true,
       // preload: path.join(__dirname, "preload.js"),
     },
     titleBarStyle: "hiddenInset",
@@ -221,10 +225,6 @@ function createNewWindow(file) {
 
   currentWindows.set(windowId, newWindow);
   refreshCache("add", file);
-  // console.log("hey", currentWindows);
-
-  // send file content to render
-  // newWindow.webContents.send("new-file", fileContent);
 }
 
 function refreshCache(status, file) {
@@ -268,40 +268,4 @@ function saveFileArray(value, key, map) {
 ///Open Directory
 function newFile() {
   createNewWindow("new");
-  // // open files dialog looking for markdown
-  // const directory = dialog.showOpenDialogSync(false, {
-  //   properties: ["openDirectory", "createDirectory"],
-  // });
-
-  // // if no directory
-  // if (!directory) return;
-  // const dir = directory[0];
-  // console.log(currentWindows);
-  // mainWindow.webContents.send("new-dir", dir);
 }
-// ///Open Directory
-// function openDir() {
-//   // open files dialog looking for markdown
-//   const directory = dialog.showOpenDialogSync(mainWindow, {
-//     properties: ["openDirectory"],
-//   });
-
-//   // if no directory
-//   if (!directory) return;
-//   const dir = directory[0];
-//   mainWindow.webContents.send("new-dir", dir);
-// }
-
-// function createNewWindow() {
-//   // Create the browser window.
-//   mainWindow[2] = new BrowserWindow({
-//     width: 200,
-//     height: 200,
-//     webPreferences: {
-//       nodeIntegration: true,
-//       enableRemoteModule: true,
-//       // preload: path.join(__dirname, "preload.js"),
-//     },
-//     titleBarStyle: "hiddenInset",
-//   });
-// }
