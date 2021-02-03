@@ -1,9 +1,12 @@
 .Main {
   max-width: 800px;
   margin: 0 auto;
-  padding: 40px;
+
+  // padding: ($header + 80px) 80px 80px;
+  padding: 80px;
   min-height: 100%;
   position: relative;
+  counter-reset: section;
 
   &__main {
     position: relative;
@@ -11,6 +14,10 @@
     @include text;
     color: $white;
     min-height: 500px;
+
+    .--light & {
+      color: $darkerBlack;
+    }
   }
 
   &__textarea,
@@ -37,6 +44,7 @@
       min-height: 26px;
     }
   }
+
   &__textarea {
     position: absolute;
     top: 0px;
@@ -48,6 +56,7 @@
     min-height: 200px;
   }
   &__line {
+    counter-increment: section;
     position: absolute;
     top: 0;
     right: 100%;
@@ -55,6 +64,9 @@
     font-size: 12px;
     opacity: 0.5;
     padding-right: 10px;
+    &:before {
+      content: counter(section);
+    }
   }
   &__syllable {
     position: absolute;
@@ -66,55 +78,4 @@
     padding-left: 10px;
     color: $blue;
   }
-
-  // p {
-  //   counter-increment: section;
-  //   position: relative;
-  //   display: block;
-
-  //   &:before {
-  //     content: counter(section);
-  //     position: absolute;
-  //     right: 100%;
-  //     width: au to;
-  //     font-size: 12px;
-  //     /* line-height: 22px; */
-  //     opacity: 0.5;
-  //     padding-right: 10px;
-  //   }
-  //   &:nth-child(4n + 4):after {
-  //     content: "";
-  //     display: block;
-  //     width: 100%;
-  //     border-bottom: 1px solid $white;
-  //     margin: 5px 0;
-  //     opacity: 0.2;
-  //   }
-  // }
-
-  // &__sidebar {
-  //   position: absolute;
-  //   right: 0;
-  //   top: 40px;
-  //   width: 40px;
-  //   font-size: 12px;
-  //   // opacity: 0.5;
-  //   padding-left: 10px;
-  //   color: $blue;
-
-  //   p {
-  //     counter-increment: section;
-  //     position: relative;
-  //     display: block;
-
-  //     &:nth-child(4n + 4):after {
-  //       content: "";
-  //       display: block;
-  //       width: 100%;
-  //       border-bottom: 1px solid transparent;
-  //       margin: 5px 0;
-  //       opacity: 0.2;
-  //     }
-  //   }
-  // }
 }

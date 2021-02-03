@@ -1,35 +1,44 @@
 .Metronome {
-  position: fixed;
-  bottom: 0;
-  left: 0px;
-  z-index: $z-index-metronome;
+  position: absolute;
+  top: 0;
+  left: 80px;
+  height: $header;
+  width: auto;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  opacity: 0.4;
+
+  .--light & {
+    color: $darkerBlack;
+  }
+
+  @include hover {
+    opacity: 1;
+  }
 
   &__btn {
     display: block;
     text-align: center;
-    width: 40px;
+    width: 20px;
     font-size: 0px;
-    padding: 14px;
+    padding: 2px;
     cursor: pointer;
-    opacity: 0.4;
 
     svg {
       fill: $white;
       width: 14px;
       height: 14px;
-
       display: block;
+
+      .--light & {
+        fill: $darkerBlack;
+      }
     }
   }
 
   &__bpm {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    margin: 20px;
-    opacity: 0.4;
-    border: 1px solid $white;
-    border-radius: 3px;
+    position: relative;
     font-size: 12px;
     line-height: 20px;
     display: flex;
@@ -39,10 +48,17 @@
         color: red;
       }
     }
-    @include hover {
-      opacity: 1;
-    }
+
     input {
+      color: inherit;
+      background: $darkBlack;
+
+      .--light & {
+        background: $grey;
+        color: $darkerBlack;
+      }
+
+      border-radius: 3px;
       /* Chrome, Safari, Edge, Opera */
       &::-webkit-outer-spin-button,
       &::-webkit-inner-spin-button {
@@ -60,16 +76,14 @@
       border: 0;
       outline: none;
       font-size: 12px;
-      line-height: 20px;
-      color: $white;
+      line-height: 24px;
+
       padding: 0 5px;
     }
   }
   span {
-    background: $white;
     font-size: 12px;
-    line-height: 20px;
-    color: $darkerBlack;
+    line-height: 24px;
     padding: 0 5px;
   }
 }

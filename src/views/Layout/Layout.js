@@ -1,126 +1,83 @@
-import React, { useState, useEffect } from "react";
-import { Main, Sidebar, Metronome } from "components/components";
+import React, { useState, useEffect, useRef } from "react";
+import { Main, Header } from "components/components";
 
 const settings = window.require("electron-settings");
 const { ipcRenderer } = window.require("electron");
+
 const fs = window.require("fs");
 
-const Layout = () => {
+const Layout = ({ currentFile = false }) => {
+  const [mode, setMode] = useState(settings.getSync("mode") || "dark");
+  const input = useRef(null);
+
+  const currentFileSplit = currentFile.split("/");
+
+  const filesData = [
+    {
+      path: new URL(`file://${currentFile}`),
+      title: currentFileSplit[currentFileSplit.length - 1],
+    },
+  ];
   const [loadedFile, setLoadedFile] = useState(null);
-  const [filesData, setFilesData] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(0);
   const [tab, setTab] = useState(false);
 
-  const [directory, setDirectory] = useState(
-    settings.getSync("directory") || null
-  );
-
   useEffect(() => {
-    if (!filesData.length && directory) {
-      loadAndReadFiles(directory);
-    }
-    if (directory && filesData.length && loadedFile === null) {
-      loadFile(0);
-    }
+    if (!loadedFile && currentFile && filesData[0]) {
+      loadFile(filesData[0]);
 
-    ipcRenderer.on("new-dir", (event, directory) => {
-      setDirectory(directory);
-      settings.set("directory", directory);
-      loadAndReadFiles(directory);
-    });
-
-    ipcRenderer.on("save-file", () => {
-      saveFile();
-    });
+      ipcRenderer.on("save-file", () => {
+        saveFile();
+      });
+    }
   });
 
-  const loadAndReadFiles = (directory) => {
-    fs.readdir(directory, (err, files) => {
-      const filteredFiles = files.filter((file) => file.includes(".txt"));
-      const filesDataMain = filteredFiles.map((file) => ({
-        path: `${directory}/${file}`,
-        title: file,
-      }));
-
-      console.log(filesDataMain);
-
-      setFilesData(filesDataMain);
-      // loadFile(0);
-      // setFilesData;
-    });
+  const switchMode = (color) => {
+    // settings.set("mode", color);
+    setMode(color);
   };
 
-  const changeFile = (index) => {
-    if (activeIndex !== index) {
-      saveFile();
-      loadFile(index);
-    }
-  };
-
-  const loadFile = (index) => {
-    const content = fs.readFileSync(filesData[index].path).toString();
+  const loadFile = ({ path = false }) => {
+    if (!path) return;
+    const content = fs.readFileSync(path).toString();
     setLoadedFile(content);
-    setActiveIndex(index);
   };
 
   const saveFile = () => {
-    // console.log(filesData, activeIndex);
     if (!filesData.length) return;
-    fs.writeFile(filesData[activeIndex].path, loadedFile, (err) => {
+    fs.writeFile(filesData[0].path, input.current.value, (err) => {
       if (err) return console.log(err);
       console.log("saved");
     });
   };
 
-  const newFile = (newEntryName) => {
-    const filePath = `${directory}/${newEntryName}.txt`;
-    fs.writeFile(filePath, "", (err) => {
-      if (err) return console.log(err);
-
-      let newFilesData = filesData;
-      newFilesData.unshift({
-        path: filePath,
-        title: `${newEntryName}.txt`,
-      });
-
-      setFilesData(newFilesData);
-      loadFile(0);
-    });
-  };
-
   return (
-    <div className={"Layout"}>
-      <div className={"Layout__header"}>Sixteen</div>
+    <div className={`Layout --${mode}`}>
+      <Header
+        {...{
+          showTabs: true,
+          tab,
+          setTab,
+          switchMode,
+          mode,
+          title:
+            filesData && filesData[0] && filesData[0].title
+              ? filesData[0].title
+              : false,
+        }}
+      />
 
-      {directory ? (
-        <div className={`Layout__main ${tab ? "has-tab" : ""}`}>
-          <Sidebar
+      <div className={`Layout__main`}>
+        {loadedFile !== null && (
+          <Main
             {...{
-              activeIndex,
-              newFile,
-              filesData,
-              changeFile,
-              tab,
-              setTab,
+              file: loadedFile,
+              setLoadedFile,
+              input,
             }}
+            key={"main--" + currentFile}
           />
-          <Metronome />
-
-          {loadedFile !== null && (
-            <Main
-              {...{
-                file: loadedFile,
-                setLoadedFile,
-              }}
-              key={"main--" + activeIndex}
-            />
-          )}
-        </div>
-      ) : (
-        <div className="Layout__notFound">
-          <span>Press CmdORCtrl+0 to open directory</span>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

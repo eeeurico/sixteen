@@ -1,23 +1,15 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, Menu, dialog } = require("electron");
+const settings = require("electron-settings");
+
 const path = require("path");
-const fs = require("fs");
+// const fs = require("fs");
 const isDev = require("electron-is-dev");
-let mainWindow = false;
 
-function createWindow() {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      nodeIntegration: true,
-      enableRemoteModule: true,
-      // preload: path.join(__dirname, "preload.js"),
-    },
-    titleBarStyle: "hidden",
-  });
+var currentWindows = new Map();
+let currentFiles = [];
 
+function createMainMenu() {
   const isMac = process.platform === "darwin";
 
   const template = [
@@ -43,25 +35,25 @@ function createWindow() {
     {
       label: "File",
       submenu: [
-        // {
-        //   label: "Open File",
-        //   accelerator: "CmdOrCtrl+O",
-        //   click() {
-        //     openFile();
-        //   },
-        // },
         {
-          label: "Open Folder",
+          label: "New Window",
+          accelerator: "CmdOrCtrl+N",
+          click() {
+            newFile();
+          },
+        },
+        {
+          label: "Open File",
           accelerator: "CmdOrCtrl+O",
           click() {
-            openDir();
+            openFile();
           },
         },
         {
           label: "Save File",
           accelerator: "CmdOrCtrl+S",
           click() {
-            mainWindow.webContents.send("save-file");
+            saveFile();
           },
         },
       ],
@@ -153,28 +145,19 @@ function createWindow() {
   ];
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
-
-  // and load the index.html of the app.
-  mainWindow.loadURL(
-    isDev
-      ? "http://localhost:3000/"
-      : `file://${path.join(__dirname, "../build/index.html")}`
-  );
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createWindow();
+  createMainMenu();
+  createStartWindows();
 
   app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    if (BrowserWindow.getAllWindows().length === 0) createStartWindows();
   });
 });
 
@@ -191,30 +174,134 @@ app.on("window-all-closed", function () {
 ///Open File
 function openFile() {
   // open files dialog looking for markdown
-  const files = dialog.showOpenDialogSync(mainWindow, {
+  const files = dialog.showOpenDialogSync(false, {
     properties: ["openFile"],
-    filters: [{ name: "Markdown", extensions: ["md", "markdown", "txt"] }],
+    filters: [{ name: "Txt", extensions: ["txt"] }],
   });
 
   // if no files
   if (!files) return;
 
   const file = files[0];
-  const fileContent = fs.readFileSync(file).toString();
+  createNewWindow(file);
+}
+
+function createNewWindow(file) {
+  // const fileContent = file !== "new" ? fs.readFileSync(file).toString() : null;
+
+  const newWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    minWidth: 480,
+    minHeight: 320,
+    resizable: true,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      // preload: path.join(__dirname, "preload.js"),
+    },
+    titleBarStyle: "hiddenInset",
+  });
+
+  const windowId = newWindow.id;
+  newWindow.on("closed", () => {
+    /// #if env == 'DEBUG'
+    console.log(`Window was closed, id = ${windowId}`);
+    /// #endif
+    currentWindows.delete(windowId);
+    refreshCache("remove", file);
+  });
+
+  // The window identifier can be checked from the Renderer side.
+  // `win.loadFile` will escape `#` to `%23`, So use `win.loadURL`
+  const filePath = path.join(__dirname, "index.html");
+  newWindow.loadURL(
+    isDev ? `http://localhost:3000/#${file}` : `file://${filePath}#${file}`
+  );
+
+  currentWindows.set(windowId, newWindow);
+  refreshCache("add", file);
+  // console.log("hey", currentWindows);
 
   // send file content to render
-  mainWindow.webContents.send("new-file", fileContent);
+  // newWindow.webContents.send("new-file", fileContent);
+}
+
+function refreshCache(status, file) {
+  let files = settings.getSync("cachedFiles");
+  currentFiles = files;
+  if (file === "new") {
+    return;
+  } else if (status === "add" && !currentFiles.includes(file)) {
+    currentFiles.push(file);
+  } else if (status === "remove") {
+    currentFiles = currentFiles.filter(function (value) {
+      return file !== value;
+    });
+  }
+  settings.setSync("cachedFiles", currentFiles);
+}
+
+function createStartWindows() {
+  var cachedFiles = settings.getSync("cachedFiles");
+
+  // console.log("files:", cachedFiles, cachedFiles.length);
+  if (cachedFiles.length) {
+    for (let i = 0; i < cachedFiles.length; i++) {
+      createNewWindow(cachedFiles[i]);
+    }
+  } else {
+    // console.log("createWindow without anything");
+    createNewWindow("new");
+  }
+}
+
+//savefile
+function saveFile() {
+  currentWindows.forEach(saveFileArray);
+}
+
+function saveFileArray(value, key, map) {
+  value.webContents.send("save-file");
 }
 
 ///Open Directory
-function openDir() {
-  // open files dialog looking for markdown
-  const directory = dialog.showOpenDialogSync(mainWindow, {
-    properties: ["openDirectory"],
-  });
+function newFile() {
+  createNewWindow("new");
+  // // open files dialog looking for markdown
+  // const directory = dialog.showOpenDialogSync(false, {
+  //   properties: ["openDirectory", "createDirectory"],
+  // });
 
-  // if no directory
-  if (!directory) return;
-  const dir = directory[0];
-  mainWindow.webContents.send("new-dir", dir);
+  // // if no directory
+  // if (!directory) return;
+  // const dir = directory[0];
+  // console.log(currentWindows);
+  // mainWindow.webContents.send("new-dir", dir);
 }
+// ///Open Directory
+// function openDir() {
+//   // open files dialog looking for markdown
+//   const directory = dialog.showOpenDialogSync(mainWindow, {
+//     properties: ["openDirectory"],
+//   });
+
+//   // if no directory
+//   if (!directory) return;
+//   const dir = directory[0];
+//   mainWindow.webContents.send("new-dir", dir);
+// }
+
+// function createNewWindow() {
+//   // Create the browser window.
+//   mainWindow[2] = new BrowserWindow({
+//     width: 200,
+//     height: 200,
+//     webPreferences: {
+//       nodeIntegration: true,
+//       enableRemoteModule: true,
+//       // preload: path.join(__dirname, "preload.js"),
+//     },
+//     titleBarStyle: "hiddenInset",
+//   });
+// }
